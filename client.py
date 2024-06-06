@@ -1,7 +1,7 @@
 import socket
 import sys
 
-def get_index(server_ip, server_port):
+def get_index(server_ip, server_port, path):
     # Buat socket untuk menghubungkan ke server
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
@@ -10,7 +10,7 @@ def get_index(server_ip, server_port):
         client_socket.connect((server_ip, server_port))
         
         # Kirim permintaan HTTP GET ke server untuk mengambil file index.html
-        request = "GET / HTTP/1.1\r\nHost: {}\r\n\r\n".format(server_ip)
+        request = f"GET /{path} HTTP/1.1\r\nHost: {server_ip}\r\nConnection: close\r\n\r\n"
         client_socket.sendall(request.encode())
         
         # Terima respons dari server
@@ -28,10 +28,11 @@ def get_index(server_ip, server_port):
 
 if __name__ == "__main__":
     # Pastikan argumen command line diberikan
-    if len(sys.argv) != 3:
-        print("Usage: python client.py <server_ip> <server_port>")
+    if len(sys.argv) != 4:
+        print("Usage: python client.py <server_ip> <server_port> <path>")
     else:
         server_ip = sys.argv[1]
         server_port = int(sys.argv[2])
+        path = sys.argv[3]
 
-        get_index(server_ip, server_port)
+        get_index(server_ip, server_port, path)
